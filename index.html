@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multi-Broker Trader</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #0f172a;
+      color: white;
+    }
+
+    .app {
+      max-width: 500px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 5px;
+    }
+
+    .status {
+      text-align: center;
+      color: #22c55e;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: #1e293b;
+      padding: 18px;
+      border-radius: 15px;
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-top: 12px;
+      margin-bottom: 6px;
+    }
+
+    select,
+    input {
+      width: 100%;
+      padding: 13px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+    }
+
+    .prices {
+      display: flex;
+      justify-content: space-between;
+      margin: 15px 0;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 10px;
+      font-size: 17px;
+      font-weight: bold;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    .buy {
+      background: #16a34a;
+      color: white;
+    }
+
+    .sell {
+      background: #dc2626;
+      color: white;
+    }
+
+    .stop {
+      background: #f59e0b;
+      color: black;
+    }
+
+    .disabled {
+      opacity: 0.5;
+    }
+
+    .info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .box {
+      background: #334155;
+      padding: 12px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .warning {
+      color: #fbbf24;
+      font-size: 13px;
+      text-align: center;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <h1>🤖 Multi-Broker Trader</h1>
+  <div class="status">● Demo Mode</div>
+
+  <div class="card">
+
+    <label>Broker</label>
+    <select id="broker">
+      <option>Headway</option>
+      <option>XM</option>
+      <option>JustMarkets</option>
+      <option>FXPesa</option>
+      <option>Deriv</option>
+      <option>Other</option>
+    </select>
+
+    <label>Account</label>
+    <select id="account">
+      <option>Demo</option>
+      <option>Live</option>
+    </select>
+
+    <label>Symbol</label>
+    <select id="symbol">
+      <option>EURUSD</option>
+      <option>GBPUSD</option>
+      <option>USDJPY</option>
+      <option>USDCHF</option>
+      <option>XAUUSD</option>
+      <option>XAGUSD</option>
+      <option>BTCUSD</option>
+    </select>
+
+  </div>
+
+  <div class="card">
+
+    <div class="info">
+      <div class="box">
+        Balance<br>
+        <strong id="balance">$0.00</strong>
+      </div>
+
+      <div class="box">
+        Equity<br>
+        <strong id="equity">$0.00</strong>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <label>Lot Size</label>
+    <input id="lot" type="number" value="0.01" step="0.01">
+
+    <label>Stop Loss</label>
+    <input id="sl" type="number" value="100">
+
+    <label>Take Profit</label>
+    <input id="tp" type="number" value="200">
+
+    <button class="buy" onclick="trade('BUY')">
+      🟢 BUY
+    </button>
+
+    <button class="sell" onclick="trade('SELL')">
+      🔴 SELL
+    </button>
+
+    <button class="stop" onclick="stopTrading()">
+      ⛔ STOP TRADING
+    </button>
+
+  </div>
+
+  <div class="card">
+    <strong>Trading Status</strong>
+    <p id="message">Waiting for connection...</p>
+  </div>
+
+  <div class="warning">
+    ⚠️ Demo trading only. No real broker connection is active yet.
+  </div>
+
+</div>
+
+<script>
+
+function trade(type) {
+
+  const broker = document.getElementById("broker").value;
+  const symbol = document.getElementById("symbol").value;
+  const lot = document.getElementById("lot").value;
+
+  document.getElementById("message").innerText =
+    type + " signal created for " +
+    symbol +
+    " | Lot: " +
+    lot +
+    " | Broker: " +
+    broker;
+}
+
+function stopTrading() {
+
+  document.getElementById("message").innerText =
+    "⛔ Automated trading stopped.";
+
+}
+
+</script>
+
+</body>
+</html>
