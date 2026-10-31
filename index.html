@@ -1,233 +1,194 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Multi-Broker Trader</title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
-
-    body {
-      margin: 0;
-      background: #0f172a;
-      color: white;
-    }
-
-    .app {
-      max-width: 500px;
-      margin: auto;
-      padding: 20px;
-    }
-
-    h1 {
-      text-align: center;
-      margin-bottom: 5px;
-    }
-
-    .status {
-      text-align: center;
-      color: #22c55e;
-      margin-bottom: 20px;
-    }
-
-    .card {
-      background: #1e293b;
-      padding: 18px;
-      border-radius: 15px;
-      margin-bottom: 15px;
-    }
-
-    label {
-      display: block;
-      margin-top: 12px;
-      margin-bottom: 6px;
-    }
-
-    select,
-    input {
-      width: 100%;
-      padding: 13px;
-      border-radius: 8px;
-      border: none;
-      font-size: 16px;
-    }
-
-    .prices {
-      display: flex;
-      justify-content: space-between;
-      margin: 15px 0;
-    }
-
-    button {
-      width: 100%;
-      padding: 15px;
-      border: none;
-      border-radius: 10px;
-      font-size: 17px;
-      font-weight: bold;
-      margin-top: 10px;
-      cursor: pointer;
-    }
-
-    .buy {
-      background: #16a34a;
-      color: white;
-    }
-
-    .sell {
-      background: #dc2626;
-      color: white;
-    }
-
-    .stop {
-      background: #f59e0b;
-      color: black;
-    }
-
-    .disabled {
-      opacity: 0.5;
-    }
-
-    .info {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .box {
-      background: #334155;
-      padding: 12px;
-      border-radius: 10px;
-      text-align: center;
-    }
-
-    .warning {
-      color: #fbbf24;
-      font-size: 13px;
-      text-align: center;
-      margin-top: 15px;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nathan Forex Bot</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#080b10;color:white;font-family:Arial,sans-serif}
+header{padding:20px;background:#121923;border-bottom:1px solid #333}
+.logo{color:#e8bd52;font-size:21px;font-weight:bold}
+main{max-width:950px;margin:auto;padding:18px}
+.hero,.card{background:#151c26;border:1px solid #303844;border-radius:13px;padding:20px;margin-bottom:16px}
+.hero h1{color:#e8bd52;font-size:29px}
+.muted{color:#9ba5b3;font-size:13px}
+.badge{color:#e8bd52;font-size:12px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{background:#0d131c;padding:15px;border-radius:10px}
+.stat strong{display:block;font-size:23px;margin-top:9px}
+label{display:block;margin:14px 0 7px;color:#b5bdc9;font-size:13px}
+input,select{width:100%;padding:13px;background:#080d14;color:white;border:1px solid #394351;border-radius:8px}
+button{padding:14px;border:0;border-radius:8px;font-weight:bold}
+.start{background:#e8bd52;color:#111}
+.stop{background:#a8323a;color:white}
+.buttons{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+.status{background:#090e15;padding:14px;border-radius:8px;margin-top:15px;color:#e8bd52;font-size:13px}
+table{width:100%;font-size:12px;text-align:left}
+td,th{padding:12px 5px;border-bottom:1px solid #303844}
+th{color:#e8bd52}
+footer{text-align:center;padding:25px;color:#7e8793;font-size:12px}
+@media(min-width:650px){.grid{grid-template-columns:repeat(4,1fr)}}
+</style>
 </head>
-
 <body>
 
-<div class="app">
+<header>
+<div class="logo">NATHAN FOREX BOT</div>
+<div class="badge">● TRADING PLATFORM</div>
+</header>
 
-  <h1>🤖 Multi-Broker Trader</h1>
-  <div class="status">● Demo Mode</div>
+<main>
 
-  <div class="card">
-
-    <label>Broker</label>
-    <select id="broker">
-      <option>Headway</option>
-      <option>XM</option>
-      <option>JustMarkets</option>
-      <option>FXPesa</option>
-      <option>Deriv</option>
-      <option>Other</option>
-    </select>
-
-    <label>Account</label>
-    <select id="account">
-      <option>Demo</option>
-      <option>Live</option>
-    </select>
-
-    <label>Symbol</label>
-    <select id="symbol">
-      <option>EURUSD</option>
-      <option>GBPUSD</option>
-      <option>USDJPY</option>
-      <option>USDCHF</option>
-      <option>XAUUSD</option>
-      <option>XAGUSD</option>
-      <option>BTCUSD</option>
-    </select>
-
-  </div>
-
-  <div class="card">
-
-    <div class="info">
-      <div class="box">
-        Balance<br>
-        <strong id="balance">$0.00</strong>
-      </div>
-
-      <div class="box">
-        Equity<br>
-        <strong id="equity">$0.00</strong>
-      </div>
-    </div>
-
-  </div>
-
-  <div class="card">
-
-    <label>Lot Size</label>
-    <input id="lot" type="number" value="0.01" step="0.01">
-
-    <label>Stop Loss</label>
-    <input id="sl" type="number" value="100">
-
-    <label>Take Profit</label>
-    <input id="tp" type="number" value="200">
-
-    <button class="buy" onclick="trade('BUY')">
-      🟢 BUY
-    </button>
-
-    <button class="sell" onclick="trade('SELL')">
-      🔴 SELL
-    </button>
-
-    <button class="stop" onclick="stopTrading()">
-      ⛔ STOP TRADING
-    </button>
-
-  </div>
-
-  <div class="card">
-    <strong>Trading Status</strong>
-    <p id="message">Waiting for connection...</p>
-  </div>
-
-  <div class="warning">
-    ⚠️ Demo trading only. No real broker connection is active yet.
-  </div>
-
+<div class="hero">
+<div class="muted">WELCOME TO YOUR TRADING DASHBOARD</div>
+<h1>Trade Smarter.</h1>
+<p class="muted">Forex and Metals Automated Trading Platform</p>
+<div class="badge">MT5 ENGINE: NOT CONNECTED</div>
 </div>
 
+<h2>Account Overview</h2>
+<div class="grid">
+<div class="stat">Balance<strong>$0.00</strong></div>
+<div class="stat">Profit<strong>$0.00</strong></div>
+<div class="stat">Open Trades<strong>0</strong></div>
+<div class="stat">Bot Status<strong id="botStatus">OFF</strong></div>
+</div>
+
+<div class="card">
+<h2>MT5 Connection</h2>
+<label>Choose Broker</label>
+<select id="broker">
+<option>Headway</option>
+<option>JustMarkets</option>
+<option>Exness</option>
+<option>XM</option>
+<option>Other MT5 Broker</option>
+</select>
+
+<label>MT5 Account Number</label>
+<input id="account" placeholder="Enter account number">
+
+<label>Account Type</label>
+<select id="type">
+<option>Demo</option>
+<option>Live</option>
+<option>Cent</option>
+</select>
+
+<div class="status" id="connection">
+MT5 is not connected.
+</div>
+<p class="muted">Secure broker integration will be added later. Do not enter your trading password here.</p>
+</div>
+
+<div class="card">
+<h2>Bot Controls</h2>
+
+<label>Trading Symbol</label>
+<select id="symbol">
+<option>EURUSD</option>
+<option>GBPUSD</option>
+<option>USDJPY</option>
+<option>XAUUSD</option>
+<option>XAGUSD</option>
+<option>BTCUSD</option>
+</select>
+
+<label>Timeframe</label>
+<select id="timeframe">
+<option>M5</option>
+<option selected>M15</option>
+<option>M30</option>
+<option>H1</option>
+<option>H4</option>
+</select>
+
+<label>Risk Per Trade</label>
+<select id="risk">
+<option>0.25%</option>
+<option selected>0.50%</option>
+<option>1%</option>
+</select>
+
+<div class="buttons">
+<button class="start" onclick="startBot()">START BOT</button>
+<button class="stop" onclick="stopBot()">STOP BOT</button>
+</div>
+
+<div class="status" id="message">
+Bot is OFF. MT5 engine not connected.
+</div>
+</div>
+
+<div class="card">
+<h2>Strategy Settings</h2>
+<label>Trading Strategy</label>
+<select id="strategy">
+<option>Supply and Demand</option>
+<option>Market Structure Break</option>
+<option>Liquidity Sweep</option>
+<option>EMA Confirmation</option>
+</select>
+<p class="muted">Future EA will use confirmation candles, stop loss, take profit and risk management.</p>
+</div>
+
+<div class="card">
+<h2>Trading History</h2>
+<table>
+<thead>
+<tr><th>Symbol</th><th>Activity</th><th>Status</th></tr>
+</thead>
+<tbody id="history">
+<tr><td colspan="3">No activity yet.</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="card">
+<h2>Risk Protection</h2>
+<p>✓ Automatic stop loss</p>
+<p>✓ Risk-based lot sizing</p>
+<p>✓ Daily loss limit</p>
+<p>✓ Maximum open trades</p>
+<p>✓ Spread protection</p>
+</div>
+
+</main>
+
+<footer>
+NATHAN FOREX BOT © 2026<br>
+Automated Trading Management<br>
+Demo interface only. No live orders are executed.
+</footer>
+
 <script>
+let running=false;
 
-function trade(type) {
-
-  const broker = document.getElementById("broker").value;
-  const symbol = document.getElementById("symbol").value;
-  const lot = document.getElementById("lot").value;
-
-  document.getElementById("message").innerText =
-    type + " signal created for " +
-    symbol +
-    " | Lot: " +
-    lot +
-    " | Broker: " +
-    broker;
+function startBot(){
+running=true;
+document.getElementById("botStatus").textContent="PREVIEW";
+document.getElementById("message").textContent=
+"Preview started. Real MT5 engine is not connected.";
+addHistory("Preview started");
 }
 
-function stopTrading() {
-
-  document.getElementById("message").innerText =
-    "⛔ Automated trading stopped.";
-
+function stopBot(){
+running=false;
+document.getElementById("botStatus").textContent="OFF";
+document.getElementById("message").textContent=
+"Bot stopped. No live trading performed.";
+addHistory("Preview stopped");
 }
 
+function addHistory(action){
+let table=document.getElementById("history");
+if(table.querySelector("td[colspan]"))table.innerHTML="";
+let row=table.insertRow(0);
+row.insertCell(0).textContent=document.getElementById("symbol").value;
+row.insertCell(1).textContent=action;
+row.insertCell(2).textContent="DEMO";
+}
 </script>
 
 </body>
