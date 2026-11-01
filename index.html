@@ -2,240 +2,135 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080d18">
 <title>Nathan Forex Bot</title>
 <style>
+:root{color-scheme:dark;--bg:#080d18;--panel:#121c2d;--line:#293950;--gold:#e8b84a;--muted:#aab4c5;--green:#159b62;--red:#c63b45}
 *{box-sizing:border-box}
-body{margin:0;background:#080b10;color:white;font-family:Arial,sans-serif}
-header{padding:20px;background:#121923;border-bottom:1px solid #333}
-.logo{color:#e8bd52;font-size:21px;font-weight:bold}
-main{max-width:950px;margin:auto;padding:18px}
-.hero,.card{background:#151c26;border:1px solid #303844;border-radius:13px;padding:20px;margin-bottom:16px}
-.hero h1{color:#e8bd52;font-size:29px}
-.muted{color:#9ba5b3;font-size:13px}
-.badge{color:#e8bd52;font-size:12px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.stat{background:#0d131c;padding:15px;border-radius:10px}
-.stat strong{display:block;font-size:23px;margin-top:9px}
-label{display:block;margin:14px 0 7px;color:#b5bdc9;font-size:13px}
-input,select{width:100%;padding:13px;background:#080d14;color:white;border:1px solid #394351;border-radius:8px}
-button{padding:14px;border:0;border-radius:8px;font-weight:bold}
-.start{background:#e8bd52;color:#111}
-.stop{background:#a8323a;color:white}
-.buttons{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
-.status{background:#090e15;padding:14px;border-radius:8px;margin-top:15px;color:#e8bd52;font-size:13px}
-table{width:100%;font-size:12px;text-align:left}
-td,th{padding:12px 5px;border-bottom:1px solid #303844}
-th{color:#e8bd52}
-footer{text-align:center;padding:25px;color:#7e8793;font-size:12px}
-@media(min-width:650px){.grid{grid-template-columns:repeat(4,1fr)}}
+body{margin:0;padding:16px;background:var(--bg);color:#fff;font-family:Arial,sans-serif}
+main{max-width:760px;margin:auto}
+header{text-align:center;padding:22px 10px}
+header h1{color:var(--gold);margin:0 0 7px;font-size:27px;letter-spacing:1px}
+header p,.muted,.note{color:var(--muted)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:17px;margin:15px 0}
+h2{color:var(--gold);font-size:19px;margin:0 0 14px}
+label{display:block;margin:13px 0 6px;color:#cbd5e1;font-size:14px}
+input,select{width:100%;padding:12px;border-radius:8px;border:1px solid #394b64;background:#080f1d;color:#fff;font-size:15px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.metric,.signal,.history{background:#0b1423;border:1px solid var(--line);padding:13px;border-radius:9px}
+.metric span{display:block;color:var(--muted);font-size:12px;margin-bottom:7px}
+.metric strong{color:var(--gold);font-size:15px;overflow-wrap:anywhere}
+button{width:100%;border:0;padding:13px;border-radius:8px;margin-top:12px;font-size:15px;font-weight:bold}
+.start{background:var(--green);color:#fff}.stop{background:var(--red);color:#fff}
+.status{font-weight:bold;color:#ffcc66}
+.note{font-size:12px;line-height:1.5}
+footer{text-align:center;color:#8793a7;font-size:12px;padding:20px}
+@media(max-width:420px){.grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-
+<main>
 <header>
-<div class="logo">NATHAN FOREX BOT</div>
-<div class="badge">● TRADING PLATFORM</div>
+  <h1>NATHAN FOREX BOT</h1>
+  <p>Trading Dashboard</p>
+  <p class="status" id="connectionStatus">MT5: NOT CONNECTED</p>
 </header>
 
-<main>
+<section class="panel">
+  <h2>Broker & Account</h2>
+  <label for="broker">Broker</label>
+  <select id="broker">
+    <option>Headway</option><option>JustMarkets</option><option>XM</option>
+    <option>FXPesa</option><option>Deriv</option><option>Other</option>
+  </select>
+  <label for="accountMode">Account mode</label>
+  <select id="accountMode">
+    <option>Demo</option><option>Live (not connected)</option>
+  </select>
+  <label for="accountNumber">Account number (optional label only)</label>
+  <input id="accountNumber" inputmode="numeric" placeholder="Enter account number if you want">
+  <p class="note">This page is not connected to a broker. Never enter your trading password, investor password, API secret or other credentials here.</p>
+</section>
 
-<div class="hero">
-<div class="muted">WELCOME TO YOUR TRADING DASHBOARD</div>
-<h1>Trade Smarter.</h1>
-<p class="muted">Forex and Metals Automated Trading Platform</p>
-<div class="badge">MT5 ENGINE: NOT CONNECTED</div>
-</div>
+<section class="panel">
+  <h2>Strategy & Market</h2>
+  <label for="strategy">Strategy</label>
+  <select id="strategy"><option>Supply & Demand</option><option>EMA Trend Confirmation</option><option>Breakout</option></select>
+  <label for="symbol">Instrument</label>
+  <select id="symbol"><option>EURUSD</option><option>GBPUSD</option><option>USDJPY</option><option>XAUUSD</option><option>BTCUSD</option></select>
+  <label for="timeframe">Timeframe</label>
+  <select id="timeframe"><option>M5</option><option selected>M15</option><option>M30</option><option>H1</option><option>H4</option></select>
+</section>
 
-<h2>Account Overview</h2>
-<div class="grid">
-<div class="stat">Balance<strong>$0.00</strong></div>
-<div class="stat">Profit<strong>$0.00</strong></div>
-<div class="stat">Open Trades<strong>0</strong></div>
-<div class="stat">Bot Status<strong id="botStatus">OFF</strong></div>
-</div>
+<section class="panel">
+  <h2>Risk Settings</h2>
+  <label for="risk">Risk per trade (%) — preview setting</label>
+  <input id="risk" type="number" value="0.5" min="0.1" max="1" step="0.1">
+  <label for="stopLoss">Stop Loss (points) — preview setting</label>
+  <input id="stopLoss" type="number" value="300" min="1">
+  <label for="takeProfit">Take Profit (points) — preview setting</label>
+  <input id="takeProfit" type="number" value="600" min="1">
+  <label for="maxTrades">Maximum trades per day</label>
+  <input id="maxTrades" type="number" value="2" min="1">
+  <label for="maxDailyLoss">Maximum daily loss (%)</label>
+  <input id="maxDailyLoss" type="number" value="1" min="0.1" max="2" step="0.1">
+  <p class="note">These values are saved only in this page while it is open. They do not change MT5 orders or enforce trading limits.</p>
+</section>
 
-<div class="card">
-<h2>MT5 Connection</h2>
-<label>Choose Broker</label>
-<select id="broker">
-<option>Headway</option>
-<option>JustMarkets</option>
-<option>Exness</option>
-<option>XM</option>
-<option>Other MT5 Broker</option>
-</select>
+<section class="panel">
+  <h2>Bot Controls</h2>
+  <p class="status" id="botStatus">STATUS: PREVIEW STOPPED</p>
+  <button class="start" type="button" id="startButton">START BOT PREVIEW</button>
+  <button class="stop" type="button" id="stopButton">STOP PREVIEW</button>
+  <p class="note">Preview controls only change this dashboard's status text. They do not start, stop or control an Expert Advisor.</p>
+</section>
 
-<label>MT5 Account Number</label>
-<input id="account" placeholder="Enter account number">
+<section class="panel">
+  <h2>Trading Performance</h2>
+  <div class="grid">
+    <div class="metric"><span>Account balance</span><strong>Not connected</strong></div>
+    <div class="metric"><span>Daily profit / loss</span><strong>Not connected</strong></div>
+    <div class="metric"><span>Winning trades</span><strong>—</strong></div>
+    <div class="metric"><span>Losing trades</span><strong>—</strong></div>
+    <div class="metric"><span>Win rate</span><strong>—</strong></div>
+    <div class="metric"><span>MT5 connection</span><strong>Not connected</strong></div>
+  </div>
+</section>
 
-<label>Account Type</label>
-<select id="type">
-<option>Demo</option>
-<option>Live</option>
-<option>Cent</option>
-</select>
+<section class="panel">
+  <h2>Trade Signals</h2>
+  <div class="signal">
+    <strong>EURUSD</strong>
+    <p>Signal: NO LIVE SIGNAL</p>
+    <p class="muted">Entry / Stop Loss / Take Profit: —</p>
+  </div>
+  <div class="signal" style="margin-top:10px">
+    <strong>XAUUSD — Gold</strong>
+    <p>Signal: NO LIVE SIGNAL</p>
+    <p class="muted">Waiting for a connected market-data source.</p>
+  </div>
+  <p class="note">These are status placeholders, not trading recommendations or generated market signals.</p>
+</section>
 
-<div class="status" id="connection">
-MT5 is not connected.
-</div>
-<p class="muted">Secure broker integration will be added later. Do not enter your trading password here.</p>
-</div>
-
-<div class="card">
-<h2>Bot Controls</h2>
-
-<label>Trading Symbol</label>
-<select id="symbol">
-<option>EURUSD</option>
-<option>GBPUSD</option>
-<option>USDJPY</option>
-<option>XAUUSD</option>
-<option>XAGUSD</option>
-<option>BTCUSD</option>
-</select>
-
-<label>Timeframe</label>
-<select id="timeframe">
-<option>M5</option>
-<option selected>M15</option>
-<option>M30</option>
-<option>H1</option>
-<option>H4</option>
-</select>
-
-<label>Risk Per Trade</label>
-<select id="risk">
-<option>0.25%</option>
-<option selected>0.50%</option>
-<option>1%</option>
-</select>
-
-<div class="buttons">
-<button class="start" onclick="startBot()">START BOT</button>
-<button class="stop" onclick="stopBot()">STOP BOT</button>
-</div>
-
-<div class="status" id="message">
-Bot is OFF. MT5 engine not connected.
-</div>
-</div>
-
-<div class="card">
-<h2>Strategy Settings</h2>
-<label>Trading Strategy</label>
-<select id="strategy">
-<option>Supply and Demand</option>
-<option>Market Structure Break</option>
-<option>Liquidity Sweep</option>
-<option>EMA Confirmation</option>
-</select>
-<p class="muted">Future EA will use confirmation candles, stop loss, take profit and risk management.</p>
-</div>
-
-<div class="card">
-<h2>Trading History</h2>
-<table>
-<thead>
-<tr><th>Symbol</th><th>Activity</th><th>Status</th></tr>
-</thead>
-<tbody id="history">
-<tr><td colspan="3">No activity yet.</td></tr>
-</tbody>
-</table>
-</div>
-
-<div class="card">
-<h2>Risk Protection</h2>
-<p>✓ Automatic stop loss</p>
-<p>✓ Risk-based lot sizing</p>
-<p>✓ Daily loss limit</p>
-<p>✓ Maximum open trades</p>
-<p>✓ Spread protection</p>
-</div>
-
-</main>
+<section class="panel">
+  <h2>Trading History</h2>
+  <div class="history muted">No trades recorded. History will remain empty until a real, secure data connection is built.</div>
+</section>
 
 <footer>
-NATHAN FOREX BOT © 2026<br>
-Automated Trading Management<br>
-Demo interface only. No live orders are executed.
+  Nathan Forex Bot · Dashboard preview<br>
+  MT5 connection not configured · No live orders are sent
 </footer>
-
+</main>
 <script>
-let running=false;
-
-function startBot(){
-running=true;
-document.getElementById("botStatus").textContent="PREVIEW";
-document.getElementById("message").textContent=
-"Preview started. Real MT5 engine is not connected.";
-addHistory("Preview started");
-}
-
-function stopBot(){
-running=false;
-document.getElementById("botStatus").textContent="OFF";
-document.getElementById("message").textContent=
-"Bot stopped. No live trading performed.";
-addHistory("Preview stopped");
-}
-
-function addHistory(action){
-let table=document.getElementById("history");
-if(table.querySelector("td[colspan]"))table.innerHTML="";
-let row=table.insertRow(0);
-row.insertCell(0).textContent=document.getElementById("symbol").value;
-row.insertCell(1).textContent=action;
-row.insertCell(2).textContent="DEMO";
-}
+const botStatus = document.getElementById('botStatus');
+document.getElementById('startButton').addEventListener('click', () => {
+  botStatus.textContent = 'STATUS: PREVIEW ONLY — EA NOT RUNNING';
+});
+document.getElementById('stopButton').addEventListener('click', () => {
+  botStatus.textContent = 'STATUS: PREVIEW STOPPED';
+});
 </script>
-<section class="performance-panel">
-  <h2>Trading Performance</h2>
-  <div class="performance-grid">
-    <div class="performance-card">
-      <span>Account Balance</span>
-      <strong>Demo data</strong>
-    </div>
-    <div class="performance-card">
-      <span>Daily Profit/Loss</span>
-      <strong>Not connected</strong>
-    </div>
-    <div class="performance-card">
-      <span>Winning Trades</span>
-      <strong>--</strong>
-    </div>
-    <div class="performance-card">
-      <span>Losing Trades</span>
-      <strong>--</strong>
-    </div>
-    <div class="performance-card">
-      <span>Win Rate</span>
-      <strong>--</strong>
-    </div>
-    <div class="performance-card">
-      <span>Connection</span>
-      <strong>Not connected to MT5</strong>
-    </div>
-  </div>
-  <p>Performance data will appear after a secure MT5 connection is built.</p>
-</section>
-  <section class="signals-panel">
-  <h2>Trade Signals</h2>
-  <div class="signal-card">
-    <h3>EURUSD</h3>
-    <p>Signal: <strong>DEMO BUY</strong></p>
-    <p>Entry: Waiting for market data</p>
-    <p>Stop Loss: Not calculated</p>
-    <p>Take Profit: Not calculated</p>
-    <p>Status: Demo preview only</p>
-  </div>
-  <div class="signal-card">
-    <h3>XAUUSD (Gold)</h3>
-    <p>Signal: <strong>NO SIGNAL</strong></p>
-    <p>Status: Waiting for confirmation</p>
-  </div>
-  <p>These are display examples, not live trading recommendations.</p>
-</section>
 </body>
 </html>
